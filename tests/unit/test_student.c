@@ -10,6 +10,7 @@ static void test_pair_write_entry_exit(void)
     struct syscall_pairer pairer = {0};
     struct syscall_event out;
     struct syscall_event entry = {
+        
         .pid = 123,
         .entering = 1,
         .syscall_no = SYS_write,
