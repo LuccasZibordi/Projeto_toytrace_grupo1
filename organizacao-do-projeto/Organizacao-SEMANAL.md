@@ -6,6 +6,10 @@
 
 ## João
 
+### Dificuldades:
+entender o student_api.h e ver a sintaxe correta para o projeto (códigos que já haviam fornecido), 
+além de ter que "ir atrás" da função de certos comandos como o pairer. Resumindo, adaptar ao código/sintaxe utilizada.
+
 ## Luccas
 
 ### Dificuldades:
