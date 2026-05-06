@@ -6,8 +6,13 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
+<<<<<<< HEAD
       "cwd": ".",
       "program": "build/Debug/outDebug"
+=======
+      "cwd": "/Users/jv/Documents/Projetos de Sistemas Operacionais/Projeto/Projeto_toytrace_grupo1",
+      "program": "/Users/jv/Documents/Projetos de Sistemas Operacionais/Projeto/Projeto_toytrace_grupo1/build/Debug/outDebug"
+>>>>>>> e599db2f48ed721010ae92a0ffd96f76d68db3ac
     }
   ]
 }
