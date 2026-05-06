@@ -14,7 +14,7 @@ Nesta semana o foco foi entender completamente a estrutura do projeto toytrace, 
 ## Luccas
 
 ### Dificuldades
-Minhas maiores dificuldades foram as sintaxes dos códigos que foram dados e os que nós deveríamos escrever, principalmente as bibliotecas e funções com as quais eu nunca tinha trabalhado antes, além da própria forma como a linguagem C deve ser utilizada nesse tipo de projeto.
+Entender as sintaxes dos códigos que foram dados e os que nós deveríamos escrever, principalmente as bibliotecas e funções com as quais eu nunca tinha trabalhado antes, além da própria forma como a linguagem C deve ser utilizada nesse tipo de projeto.
 
 ## Miguel
 
@@ -29,7 +29,16 @@ O objetivo desta semana foi implementar a criação do processo filho utilizando
 
 ## João
 
+### Dificuldades:
+entender o student_api.h e ver a sintaxe correta para o projeto (códigos que já haviam fornecido), 
+além de ter que "ir atrás" da função de certos comandos como o pairer. Resumindo, adaptar ao código/sintaxe utilizada.
+
 ## Luccas
+
+### Dificuldades
+As maiores dificuldades desta semana foram compreender o fluxo de execução entre o processo pai e o processo filho durante o tracing. Também tive dificuldade em entender exatamente o que cada função deveria fazer dentro do projeto, principalmente o funcionamento de `fork()`, `ptrace()`, `waitpid()` e sinais como `SIGSTOP`.
+
+Outra dificuldade foi entender a lógica de sincronização entre os processos e interpretar corretamente a documentação e as funções da linguagem C utilizadas no projeto, já que muitas delas eram novas para mim.
 
 ## Miguel
 
