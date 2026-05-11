@@ -108,7 +108,7 @@ if (waitpid(child, status,0)<0)
         return -1;
     }
 
-    if(WIFEXITED(*status) || WIFSIGNALED(*status))
+    if(WIFEXITED(*status)|| WIFSIGNALED(*status))
     {
         return 0;
     }
