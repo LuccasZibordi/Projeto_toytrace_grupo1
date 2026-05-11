@@ -8,7 +8,7 @@ int student_pair_syscall(struct syscall_pairer *pairer,
      if(ev->entering == 1)
      {
         pairer->entry=*ev;
-        pairer->has_entry = *ev;
+        pairer->has_entry = 1;
         //printf
         return 0;
      }

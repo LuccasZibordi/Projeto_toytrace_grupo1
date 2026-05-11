@@ -55,6 +55,9 @@ Nesta etapa o foco foi construir o loop principal de tracing, permitindo detecta
 
 ## Luccas
 
+### Dificuldades
+modo de utilizar as funções fornecidas para implementar no cósigo
+
 ## Miguel
 
 ---
