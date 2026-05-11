@@ -171,13 +171,15 @@ int trace_program(char *const argv[],
             return 0;
         }
 
-        /*
-         * TODO Semana 4:
-         *
-         * Use PTRACE_GETREGS para preencher regs.
-         * Depois chame fill_event_from_regs() e observer().
-         */
-        memset(&regs, 0, sizeof(regs));
+    
+        memset(&regs, 0, sizeof(regs)); 
+
+         if(ptrace(PTRACE_GETREGS,child,NULL, &regs)<0)
+        {
+            perror("ptrace");
+            return -1;
+        }
+
         fill_event_from_regs(child, entering, &regs, &ev);
         if (observer != NULL) {
             observer(&ev, userdata);
