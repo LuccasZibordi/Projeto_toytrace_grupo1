@@ -90,16 +90,14 @@ if (ret < 0 ){
 
 static int resume_until_next_syscall(pid_t child, int signal_to_deliver)
 {
-    /*
-     * TODO Semana 3:
-     *
-     * Use ptrace(PTRACE_SYSCALL, ...) para deixar o filho executar ate a
-     * proxima entrada ou saida de syscall.
-     *
-     * signal_to_deliver deve ser repassado como quarto argumento do ptrace.
-     */
-    fprintf(stderr, "erro: TODO Semana 3: implementar resume_until_next_syscall()\n");
-    return -1;
+      long ret;
+    ret = ptrace(PTRACE_SYSCALL, child, 0, signal_to_deliver);
+
+    if (ret < 0){
+        return -1;
+    };
+
+    return 0;
 }
 
 static int wait_for_syscall_stop(pid_t child, int *status)
