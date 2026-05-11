@@ -76,14 +76,16 @@ static int wait_for_initial_stop(pid_t child)
 
 static int configure_trace_options(pid_t child)
 {
-    /*
-     * TODO Semana 3:
-     *
-     * Configure PTRACE_O_TRACESYSGOOD com PTRACE_SETOPTIONS.
-     * Isso ajuda a diferenciar paradas de syscall de outros sinais.
-     */
-    fprintf(stderr, "erro: TODO Semana 3: implementar configure_trace_options()\n");
+    long ret;
+ret = ptrace(PTRACE_SETOPTIONS, child, NULL, PTRACE_O_TRACESYSGOOD);
+if (ret < 0 ){
+    perror("erro ptrace PTRACE_SETOPTIONS");
     return -1;
+
+} else{
+    return 0;
+}
+
 }
 
 static int resume_until_next_syscall(pid_t child, int signal_to_deliver)
