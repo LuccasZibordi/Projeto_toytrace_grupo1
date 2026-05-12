@@ -18,20 +18,18 @@ static void fill_event_from_regs(pid_t pid,
                                  const struct user_regs_struct *regs,
                                  struct syscall_event *ev)
 {
-    /*
-     * TODO Semana 4:
-     *
-     * Preencha struct syscall_event usando os registradores x86_64.
-     *
-     * Dicas:
-     * - regs->orig_rax contem o numero da syscall.
-     * - regs->rax contem o retorno, valido na saida.
-     * - os seis argumentos ficam em rdi, rsi, rdx, r10, r8 e r9.
-     * - ev->entering deve copiar o parametro entering.
-     */
     memset(ev, 0, sizeof(*ev));
     ev->pid = pid;
     ev->entering = entering;
+    ev->syscall_no = regs->orig_rax;
+    ev->ret = regs->rax;
+    ev->args[0] = regs->rdi;
+    ev->args[1] = regs->rsi;
+    ev->args[2] = regs->rdx;
+    ev->args[3] = regs->r10;
+    ev->args[4] = regs->r8;
+    ev->args[5] = regs->r9;
+
 }
 
 static pid_t launch_tracee(char *const argv[])
