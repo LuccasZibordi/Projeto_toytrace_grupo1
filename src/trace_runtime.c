@@ -112,7 +112,7 @@ if (waitpid(child, status,0)<0)
     }
 
 
-    if(wifstopped(*status)== (SIGTRAP | 0x80))
+    if(WIFSTOPPED(*status)== (SIGTRAP | 0x80))
     {
         return 1;
     }
