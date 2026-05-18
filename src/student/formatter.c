@@ -20,6 +20,23 @@ void student_debug_raw_event(const struct syscall_event *ev, char *buf,
 
 void student_format_event(const struct syscall_event *ev, char *buf,
                           size_t bufsz) {
+                            if (ev->entering) {
+        return; 
+    }
+    char path_buf[256];
+
+  
+    switch (ev->syscall_no) {
+        
+        case SYS_read:
+            snprintf(buf, bufsz, "read(%ld, %p, %lu) = %ld",
+                     ev->args[0], (void *)ev->args[1], ev->args[2], ev->ret);
+            break;
+
+        case SYS_write:
+            snprintf(buf, bufsz, "write(%ld, %p, %lu) = %ld",
+                     ev->args[0], (void *)ev->args[1], ev->args[2], ev->ret);
+            break;
   /*
    * TODO Semana 5:
    *
@@ -35,7 +52,10 @@ void student_format_event(const struct syscall_event *ev, char *buf,
    * Para caminhos do processo monitorado, use read_child_string().
    * Se a leitura falhar, imprima "<ilegivel>".
    */
+          default:
   snprintf(buf, bufsz, "%s(%#lx, %#lx, %#lx, %#lx, %#lx, %#lx) = %ld",
            syscall_name(ev->syscall_no), ev->args[0], ev->args[1], ev->args[2],
            ev->args[3], ev->args[4], ev->args[5], ev->ret);
+  break;
+    }
 }
