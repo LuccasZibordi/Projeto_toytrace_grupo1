@@ -1,7 +1,6 @@
 #include "student_api.h"
-
 #include "syscall_names.h"
-
+#include <sys/syscall.h>
 #include <stdio.h>
 
 void student_debug_raw_event(const struct syscall_event *ev, char *buf,
