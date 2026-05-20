@@ -29,16 +29,18 @@ static void fill_event_from_regs(pid_t pid,
     ev->args[3] = regs->r10;
     ev->args[4] = regs->r8;
     ev->args[5] = regs->r9;
-
 }
 
 static pid_t launch_tracee(char *const argv[])
 {
     pid_t pid = fork();
-    if (pid < 0) {
+    if (pid < 0)
+    {
         perror("fork");
         return -1;
-    } else if (pid == 0) {
+    }
+    else if (pid == 0)
+    {
         printf("dentro do filho");
         ptrace(PTRACE_TRACEME, 0, NULL, NULL);
         raise(SIGSTOP);
@@ -54,44 +56,49 @@ static int wait_for_initial_stop(pid_t child)
 
     int status;
 
-    if (waitpid(child, &status, 0) < 0) {
+    if (waitpid(child, &status, 0) < 0)
+    {
         fprintf(stderr, "erro no waitpid");
         return -1;
     };
 
-    if (!WIFSTOPPED(status)) {
+    if (!WIFSTOPPED(status))
+    {
         fprintf(stderr, "erro generico");
         return -1;
     }
 
-    if (WSTOPSIG(status) != SIGSTOP) {
+    if (WSTOPSIG(status) != SIGSTOP)
+    {
         fprintf(stderr, "erro generico");
         return -1;
     }
-  
+
     return 0;
 }
 
 static int configure_trace_options(pid_t child)
 {
     long ret;
-ret = ptrace(PTRACE_SETOPTIONS, child, NULL, PTRACE_O_TRACESYSGOOD);
-if (ret < 0 ){
-    perror("erro ptrace PTRACE_SETOPTIONS");
-    return -1;
-
-} else{
-    return 0;
-}
-
+    ret = ptrace(PTRACE_SETOPTIONS, child, NULL, PTRACE_O_TRACESYSGOOD);
+    if (ret < 0)
+    {
+        perror("erro ptrace PTRACE_SETOPTIONS");
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 static int resume_until_next_syscall(pid_t child, int signal_to_deliver)
 {
-     long ret;
+    long ret;
     ret = ptrace(PTRACE_SYSCALL, child, 0, signal_to_deliver);
 
-    if (ret < 0){
+    if (ret < 0)
+    {
         return -1;
     };
 
@@ -100,92 +107,104 @@ static int resume_until_next_syscall(pid_t child, int signal_to_deliver)
 
 static int wait_for_syscall_stop(pid_t child, int *status)
 {
-if (waitpid(child, status,0)<0)
-    {
-        perror("erro");
-        return -1;
+    while (1) {
+        if (waitpid(child, status, 0) < 0) {
+            perror("waitpid");
+            return -1;
+        }
+
+        if (WIFEXITED(*status) || WIFSIGNALED(*status)) {
+            return 0;
+        }
+
+        if (WIFSTOPPED(*status)) {
+            int sig = WSTOPSIG(*status);
+
+            if (sig == (SIGTRAP | 0x80)) {
+                return 1;
+            }
+
+            if (sig == SIGTRAP) {
+                if (ptrace(PTRACE_SYSCALL, child, NULL, 0) < 0) {
+                    perror("ptrace");
+                    return -1;
+                }
+                continue;
+            }
+
+            if (ptrace(PTRACE_SYSCALL, child, NULL, sig) < 0) {
+                perror("ptrace");
+                return -1;
+            }
+        }
     }
-
-    if(WIFEXITED(*status)|| WIFSIGNALED(*status))
-    {
-        return 0;
-    }
-
-
-    if(WIFSTOPPED(*status)== (SIGTRAP | 0x80))
-    {
-        return 1;
-    }
-
-    return 0;
 }
 
-int trace_program(char *const argv[],
-                  trace_observer_fn observer,
-                  void *userdata)
+int trace_program(char *const argv[], trace_observer_fn observer, void *userdata)
 {
     pid_t child;
     int status = 0;
     int entering = 1;
-
-    if (argv == NULL || argv[0] == NULL) {
+    if (argv == NULL || argv[0] == NULL)
+    {
         fprintf(stderr, "erro: programa alvo ausente\n");
         return -1;
     }
-
     child = launch_tracee(argv);
-    if (child < 0) {
+    if (child < 0)
+    {
         return -1;
     }
-
-    if (wait_for_initial_stop(child) < 0) {
+    if (wait_for_initial_stop(child) < 0)
+    {
         return -1;
     }
-
-    if (configure_trace_options(child) < 0) {
+    if (configure_trace_options(child) < 0)
+    {
         return -1;
     }
-
-    if (resume_until_next_syscall(child, 0) < 0) {
+    if (resume_until_next_syscall(child, 0) < 0)
+    {
         return -1;
     }
-
-    while (1) {
+    while (1)
+    {
         struct user_regs_struct regs;
         struct syscall_event ev;
         int stop_kind;
 
         stop_kind = wait_for_syscall_stop(child, &status);
-        if (stop_kind < 0) {
+
+        if (stop_kind < 0)
+        {
             return -1;
         }
-        if (stop_kind == 0) {
-            if (WIFEXITED(status)) {
+        if (stop_kind == 0)
+        {
+            if (WIFEXITED(status))
+            {
                 return WEXITSTATUS(status);
             }
-            if (WIFSIGNALED(status)) {
+            if (WIFSIGNALED(status))
+            {
                 return 128 + WTERMSIG(status);
             }
             return 0;
         }
-
-    
-        memset(&regs, 0, sizeof(regs)); 
-
-         if(ptrace(PTRACE_GETREGS,child,NULL, &regs)<0)
+        memset(&regs, 0, sizeof(regs));
+        if (ptrace(PTRACE_GETREGS, child, NULL, &regs) < 0)
         {
             perror("ptrace");
             return -1;
         }
-
         fill_event_from_regs(child, entering, &regs, &ev);
-        if (observer != NULL) {
+        if (observer != NULL)
+        {
             observer(&ev, userdata);
         }
-
         entering = !entering;
-
-        if (resume_until_next_syscall(child, 0) < 0) {
+        if (resume_until_next_syscall(child, 0) < 0)
+        {
             return -1;
         }
     }
