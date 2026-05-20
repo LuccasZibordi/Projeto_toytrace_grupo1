@@ -2,6 +2,8 @@
 
 #include "syscall_names.h"
 
+#include <sys/syscall.h>
+
 #include <stdio.h>
 
 void student_debug_raw_event(const struct syscall_event *ev, char *buf,
@@ -20,6 +22,37 @@ void student_debug_raw_event(const struct syscall_event *ev, char *buf,
 
 void student_format_event(const struct syscall_event *ev, char *buf,
                           size_t bufsz) {
+                            if (ev->entering) {
+        return; 
+    }
+    char path_buf[256];
+
+  
+    switch (ev->syscall_no) {
+        
+        case SYS_read:
+            snprintf(buf, bufsz, "read(%ld, %p, %lu) = %ld",
+                     ev->args[0], (void *)ev->args[1], ev->args[2], ev->ret);
+            break;
+
+        case SYS_write:
+            snprintf(buf, bufsz, "write(%ld, %p, %lu) = %ld",
+                     ev->args[0], (void *)ev->args[1], ev->args[2], ev->ret);
+            break;
+
+
+        case SYS_openat:
+            if (read_child_string(ev->pid, ev->args[1], path_buf, sizeof(path_buf)))
+            {
+                snprintf(buf, bufsz, "openat(%ld, \"%s\", %ld, %ld) = %ld",
+                         ev->args[0], path_buf, ev->args[2], ev->args[3], ev->ret);
+            }
+            else
+            {
+                snprintf(buf, bufsz, "openat(%ld, \"%s\", %ld, %ld) = %ld",
+                         ev->args[0], "<ilegivel>", ev->args[2], ev->args[3], ev->ret);
+            }
+            break;
   /*
    * TODO Semana 5:
    *
