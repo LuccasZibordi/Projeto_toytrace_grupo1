@@ -22,7 +22,6 @@ void student_format_event(const struct syscall_event *ev, char *buf,
                             if (ev->entering) {
         return; 
     }
-    char path_buf[256];
 
   
     switch (ev->syscall_no) {
@@ -36,21 +35,7 @@ void student_format_event(const struct syscall_event *ev, char *buf,
             snprintf(buf, bufsz, "write(%ld, %p, %lu) = %ld",
                      ev->args[0], (void *)ev->args[1], ev->args[2], ev->ret);
             break;
-  /*
-   * TODO Semana 5:
-   *
-   * Primeiro, formate uma syscall completa em uma linha simples.
-   *
-   * Depois, adicione casos especiais para:
-   *     read(fd, buf, count)
-   *     write(fd, buf, count)
-   *     openat(dirfd, "path", flags, mode)
-   *     execve("path", ...)
-   *     exit_group(status)
-   *
-   * Para caminhos do processo monitorado, use read_child_string().
-   * Se a leitura falhar, imprima "<ilegivel>".
-   */
+
           default:
   snprintf(buf, bufsz, "%s(%#lx, %#lx, %#lx, %#lx, %#lx, %#lx) = %ld",
            syscall_name(ev->syscall_no), ev->args[0], ev->args[1], ev->args[2],
