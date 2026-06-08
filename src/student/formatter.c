@@ -19,10 +19,11 @@ void student_debug_raw_event(const struct syscall_event *ev, char *buf,
 
 void student_format_event(const struct syscall_event *ev, char *buf,
                           size_t bufsz) {
+  char path_buf[256];
                             if (ev->entering) {
         return; 
     }
-
+switch (ev->syscall_no) {
   case SYS_read:
     snprintf(buf, bufsz, "read(%ld, %p, %lu) = %ld", ev->args[0],
              (void *)ev->args[1], ev->args[2], ev->ret);
