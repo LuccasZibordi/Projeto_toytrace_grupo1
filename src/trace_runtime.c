@@ -41,7 +41,6 @@ static pid_t launch_tracee(char *const argv[])
     }
     else if (pid == 0)
     {
-        printf("dentro do filho");
         ptrace(PTRACE_TRACEME, 0, NULL, NULL);
         raise(SIGSTOP);
         execvp(argv[0], argv);

@@ -41,6 +41,14 @@ switch (ev->syscall_no) {
 
     snprintf(buf, bufsz, "execve(\"%s\", ...) = %ld", path_buf, ev->ret);
     break;
+  case SYS_openat:
+      if (read_child_string(ev->pid, ev->args[1], path_buf, sizeof(path_buf)) < 0) {
+        snprintf(path_buf, sizeof(path_buf), "<ilegivel>");
+      }
+
+      snprintf(buf, bufsz, "openat(%ld, \"%s\", %#lx, %#lx) = %ld",
+               ev->args[0], path_buf, ev->args[2], ev->args[3], ev->ret);
+      break;
 
   case SYS_exit_group:
     snprintf(buf, bufsz, "exit_group(%lu) = %ld", ev->args[0], ev->ret);
